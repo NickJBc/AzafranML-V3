@@ -1,0 +1,163 @@
+﻿{
+  "Scenario": "Forecasting",
+  "DataSource": {
+    "Type": "TabularFile",
+    "Version": 1,
+    "FilePath": "C:\\Users\\njbed\\Desktop\\production.csv",
+    "Delimiter": ",",
+    "DecimalMarker": ".",
+    "HasHeader": true,
+    "ColumnProperties": [
+      {
+        "ColumnName": "Month",
+        "ColumnPurpose": "Feature",
+        "ColumnDataFormat": "String",
+        "IsCategorical": false,
+        "Type": "Column",
+        "Version": 4
+      },
+      {
+        "ColumnName": "Monthly milk production (litters per cow)",
+        "ColumnPurpose": "Feature",
+        "ColumnDataFormat": "Single",
+        "IsCategorical": false,
+        "Type": "Column",
+        "Version": 4
+      }
+    ]
+  },
+  "Environment": {
+    "Type": "LocalCPU",
+    "Version": 1
+  },
+  "RunHistory": {
+    "Version": 3,
+    "Type": "Result",
+    "Trials": [
+      {
+        "Version": 1,
+        "Type": "Trial",
+        "TrainerName": "ForecastBySsa",
+        "Score": 88.567758007325992,
+        "RuntimeInSeconds": 0.012,
+        "Parameter": {
+          "_SCHEMA_": "e0",
+          "e0": {
+            "WindowSize": 7,
+            "SeriesLength": 46,
+            "TrainSize": 168,
+            "Horizon": 10,
+            "OutputColumnName": "Monthly milk production (litters per cow)",
+            "InputColumnName": "Monthly milk production (litters per cow)",
+            "ConfidenceLowerBoundColumn": "Monthly milk production (litters per cow)_LB",
+            "ConfidenceUpperBoundColumn": "Monthly milk production (litters per cow)_UB"
+          }
+        }
+      },
+      {
+        "Version": 1,
+        "Type": "Trial",
+        "TrainerName": "ForecastBySsa",
+        "Score": 88.567758007325992,
+        "RuntimeInSeconds": 0.009,
+        "Parameter": {
+          "_SCHEMA_": "e0",
+          "e0": {
+            "WindowSize": 7,
+            "SeriesLength": 47,
+            "TrainSize": 168,
+            "Horizon": 10,
+            "OutputColumnName": "Monthly milk production (litters per cow)",
+            "InputColumnName": "Monthly milk production (litters per cow)",
+            "ConfidenceLowerBoundColumn": "Monthly milk production (litters per cow)_LB",
+            "ConfidenceUpperBoundColumn": "Monthly milk production (litters per cow)_UB"
+          }
+        }
+      },
+      {
+        "Version": 1,
+        "Type": "Trial",
+        "TrainerName": "ForecastBySsa",
+        "Score": 88.567758007325992,
+        "RuntimeInSeconds": 0.01,
+        "Parameter": {
+          "_SCHEMA_": "e0",
+          "e0": {
+            "WindowSize": 7,
+            "SeriesLength": 51,
+            "TrainSize": 168,
+            "Horizon": 10,
+            "OutputColumnName": "Monthly milk production (litters per cow)",
+            "InputColumnName": "Monthly milk production (litters per cow)",
+            "ConfidenceLowerBoundColumn": "Monthly milk production (litters per cow)_LB",
+            "ConfidenceUpperBoundColumn": "Monthly milk production (litters per cow)_UB"
+          }
+        }
+      },
+      {
+        "Version": 1,
+        "Type": "Trial",
+        "TrainerName": "ForecastBySsa",
+        "Score": 88.567758007325992,
+        "RuntimeInSeconds": 0.01,
+        "Parameter": {
+          "_SCHEMA_": "e0",
+          "e0": {
+            "WindowSize": 7,
+            "SeriesLength": 61,
+            "TrainSize": 168,
+            "Horizon": 10,
+            "OutputColumnName": "Monthly milk production (litters per cow)",
+            "InputColumnName": "Monthly milk production (litters per cow)",
+            "ConfidenceLowerBoundColumn": "Monthly milk production (litters per cow)_LB",
+            "ConfidenceUpperBoundColumn": "Monthly milk production (litters per cow)_UB"
+          }
+        }
+      },
+      {
+        "Version": 1,
+        "Type": "Trial",
+        "TrainerName": "ForecastBySsa",
+        "Score": 88.567758007325992,
+        "RuntimeInSeconds": 0.011,
+        "Parameter": {
+          "_SCHEMA_": "e0",
+          "e0": {
+            "WindowSize": 7,
+            "SeriesLength": 28,
+            "TrainSize": 168,
+            "Horizon": 10,
+            "OutputColumnName": "Monthly milk production (litters per cow)",
+            "InputColumnName": "Monthly milk production (litters per cow)",
+            "ConfidenceLowerBoundColumn": "Monthly milk production (litters per cow)_LB",
+            "ConfidenceUpperBoundColumn": "Monthly milk production (litters per cow)_UB"
+          }
+        }
+      }
+    ],
+    "Estimators": {
+      "e0": "ForecastBySsa"
+    },
+    "Schema": "e0",
+    "MetricName": "MAE",
+    "ModelFilePath": "C:\\Users\\njbed\\source\\repos\\AzafranML-V3\\AzafranML-V3\\MLModel.mlnet"
+  },
+  "Type": "TrainingConfig",
+  "Version": 4,
+  "TrainingOption": {
+    "Version": 2,
+    "Type": "ForecastingTrainingOption",
+    "TrainingTime": 250,
+    "UseCrossValidation": false,
+    "OptimizeMetric": "MAE",
+    "Horizon": 10,
+    "TimeColumn": "Month",
+    "LabelColumn": "Monthly milk production (litters per cow)",
+    "UseDefaultIndex": false,
+    "ValidationOption": {
+      "Version": 0,
+      "Type": "CrossValidationValidationOption",
+      "NumberOfFolds": 5
+    }
+  }
+}

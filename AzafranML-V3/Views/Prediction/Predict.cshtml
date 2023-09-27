@@ -1,0 +1,171 @@
+﻿@model AzafranML_V3.Models.PredictionViewModel
+<!--
+    <style>
+    body {
+         Cambio de estilo a oscuro
+        background-color: dimgrey;
+        color: white;
+       
+    }
+</style>
+ -->
+<head>
+    <!-- Imports -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas"></script>
+    <script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
+</head>
+
+<h2>Predict Production</h2>
+
+@using (Html.BeginForm("Predict", "Prediction", FormMethod.Post))
+{
+    <div class="form-group">
+        @Html.LabelFor(model => model.PredictionHorizon)
+        @Html.TextBoxFor(model => model.PredictionHorizon, new { @class = "form-control" })
+        @Html.ValidationMessageFor(model => model.PredictionHorizon)
+    </div>
+    <button type="submit" class="btn btn-primary">Predict</button>
+}
+
+@if (ViewBag.Result != null)
+{
+    <h4>Prediction Result:</h4>
+    <div>
+        <input type="checkbox" id="toggleLowerBound" checked>
+        <label for="toggleLowerBound">Limite Inferior</label>
+    </div>
+    <div>
+        <input type="checkbox" id="toggleUpperBound" checked>
+        <label for="toggleUpperBound">Limite Superior</label>
+    </div>
+    <canvas id="predictionChart"></canvas>
+    <button id="showRawNumbersBtn" class="btn btn-primary mt-3">Mostrar Datos</button>
+    <button id="exportChartBtn" class="btn btn-primary mt-3">Exportar Grafico</button>
+    <button id="exportRawNumbersBtn" class="btn btn-primary mt-3">Export Datos</button>
+    <div id="rawNumbersContainer" class="mt-3" style="display: none;"></div>
+}
+
+@section scripts {
+    <script>
+        var predictionData = @Html.Raw(Json.Serialize(ViewBag.Result != null ? ViewBag.Result.Prediction : null));
+        var lowerBoundData = @Html.Raw(Json.Serialize(ViewBag.Result != null ? ViewBag.Result.LowerBound : null));
+        var upperBoundData = @Html.Raw(Json.Serialize(ViewBag.Result != null ? ViewBag.Result.UpperBound : null));
+
+        // Create a new Chart.js line chart
+        var ctx = document.getElementById('predictionChart').getContext('2d');
+        var predictionChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: Array.from({ length: predictionData.length }, (_, i) => i + 1),
+                datasets: [
+                    {
+                        label: 'Prediction',
+                        data: predictionData,
+                        fill: false,
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        tension: 0.1
+                    },
+                    {
+                        label: 'Limite Inferior',
+                        data: lowerBoundData,
+                        fill: false,
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        tension: 0.1,
+                        hidden: false // Initial visibility state
+                    },
+                    {
+                        label: 'Limite Superior',
+                        data: upperBoundData,
+                        fill: false,
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        tension: 0.1,
+                        hidden: false // Initial visibility state
+                    }
+                ]
+            },
+            options: {
+                scales: {
+                    x: {
+                        display: true,
+                        title: {
+                            display: true,
+                            text: 'Months'
+                        }
+                    },
+                    y: {
+                        display: true,
+                        title: {
+                            display: true,
+                            text: 'Prediction Value'
+                        }
+                    }
+                }
+            }
+        });
+
+        // Toggle visibility of lower bound
+        var toggleLowerBound = document.getElementById('toggleLowerBound');
+        toggleLowerBound.addEventListener('change', function () {
+            predictionChart.getDatasetMeta(1).hidden = !this.checked;
+            predictionChart.update();
+        });
+
+        // Toggle visibility of upper bound
+        var toggleUpperBound = document.getElementById('toggleUpperBound');
+        toggleUpperBound.addEventListener('change', function () {
+            predictionChart.getDatasetMeta(2).hidden = !this.checked;
+            predictionChart.update();
+        });
+
+        // Show raw numbers
+        var showRawNumbersBtn = document.getElementById('showRawNumbersBtn');
+        var rawNumbersContainer = document.getElementById('rawNumbersContainer');
+        showRawNumbersBtn.addEventListener('click', function () {
+            rawNumbersContainer.style.display = 'block';
+            rawNumbersContainer.innerHTML = '';
+            for (var i = 0; i < predictionData.length; i++) {
+                var rawNumber = document.createElement('p');
+                rawNumber.textContent = 'Month ' + (i + 1) + ': ' + predictionData[i];
+                rawNumbersContainer.appendChild(rawNumber);
+            }
+        });
+
+        // Export chart as image
+        var exportChartBtn = document.getElementById('exportChartBtn');
+        exportChartBtn.addEventListener('click', function () {
+            html2canvas(document.getElementById('predictionChart')).then(function (canvas) {
+                var chartImage = canvas.toDataURL('image/png');
+                var a = document.createElement('a');
+                a.href = chartImage;
+                a.download = 'chart.png';
+                a.click();
+            });
+        });
+
+        // Export raw data as Excel
+        var exportRawNumbersBtn = document.getElementById('exportRawNumbersBtn');
+        exportRawNumbersBtn.addEventListener('click', function () {
+            var workbook = XLSX.utils.book_new();
+            var worksheet = XLSX.utils.aoa_to_sheet([['Month', 'Prediction']]);
+            for (var i = 0; i < predictionData.length; i++) {
+                XLSX.utils.sheet_add_aoa(worksheet, [[i + 1, predictionData[i]]], { origin: -1 });
+            }
+            XLSX.utils.book_append_sheet(workbook, worksheet, 'Raw Numbers');
+            var excelData = XLSX.write(workbook, { type: 'binary', bookType: 'xlsx' });
+
+            function s2ab(s) {
+                var buf = new ArrayBuffer(s.length);
+                var view = new Uint8Array(buf);
+                for (var i = 0; i < s.length; i++) view[i] = s.charCodeAt(i) & 0xff;
+                return buf;
+            }
+
+            var blob = new Blob([s2ab(excelData)], { type: 'application/octet-stream' });
+            var a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = 'raw_numbers.xlsx';
+            a.click();
+        });
+    </script>
+}
