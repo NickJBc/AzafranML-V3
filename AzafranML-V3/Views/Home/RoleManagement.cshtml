@@ -1,0 +1,37 @@
+﻿@page "/Home/RoleManagement"
+
+@model RoleManagementModel
+
+<h1>Role Management</h1>
+
+<!-- Display roles -->
+<table class="table">
+    <thead>
+        <tr>
+            <th>Role Name</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var role in Model.Roles)
+        {
+            <tr>
+                <td>@role.Name</td>
+                <td>
+                    <a asp-page="EditRole" asp-route-id="@role.Id">Edit</a> |
+                    <a asp-page="DeleteRole" asp-route-id="@role.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<!-- Create a new role -->
+<h2>Create New Role</h2>
+<form method="post">
+    <div class="form-group">
+        <label for="roleName">Role Name</label>
+        <input type="text" class="form-control" id="roleName" name="roleName" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Create Role</button>
+</form>
