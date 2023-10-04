@@ -56,6 +56,18 @@
             btn.textContent = "+";  // Change button text to "+" (plus)
         }
     }
+    function togglePasswordVisibility() {
+        const passwordInput = document.getElementById('newUserPassword');
+        const toggleButton = passwordInput.nextElementSibling.querySelector('button');
+
+        if (passwordInput.type === "password") {
+            passwordInput.type = "text";
+            toggleButton.textContent = "Hide";
+        } else {
+            passwordInput.type = "password";
+            toggleButton.textContent = "Show";
+        }
+    }
 </script>
 
 <h1 class="header-text">Role Management</h1>
@@ -77,6 +89,7 @@
 <div asp-validation-summary="All" class="text-danger"></div>
 
 <!-- User Creation Section -->
+<!-- User Creation Section -->
 <div class="content-section">
     <h3 class="section-header">Create New User <button class="foldable-btn" id="userCreationBtn" onclick="toggleSectionContent('userCreationContent', 'userCreationBtn')">-</button></h3>
     <div id="userCreationContent" class="foldable-content">
@@ -87,7 +100,12 @@
             </div>
             <div class="form-group">
                 <label for="newUserPassword">Password</label>
-                <input type="password" class="form-control" id="newUserPassword" name="NewUserPassword" required>
+                <div class="input-group">
+                    <input type="password" class="form-control" id="newUserPassword" name="NewUserPassword" required>
+                    <div class="input-group-append">
+                        <button type="button" class="btn btn-outline-secondary" onclick="togglePasswordVisibility()">Show</button>
+                    </div>
+                </div>
             </div>
             <button type="submit" class="btn btn-primary">Create User</button>
         </form>
