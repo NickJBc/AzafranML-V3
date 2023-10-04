@@ -1,0 +1,11 @@
+﻿@model Microsoft.AspNetCore.Identity.IdentityRole
+
+<h2>Delete Role</h2>
+
+<p>Are you sure you want to delete the role '@Model.Name'?</p>
+
+<form asp-action="DeleteRoleConfirmed" method="post">
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-danger">Delete</button>
+    <a asp-action="RoleManagement" class="btn btn-secondary">Cancel</a>
+</form>

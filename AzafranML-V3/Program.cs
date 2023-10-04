@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +19,13 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.R
     .AddRoles<IdentityRole>() // This enables role management
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddControllersWithViews();
+
+// Define policies
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("OnlyMyAccount", policy => policy.RequireClaim(ClaimTypes.Email, "a2017117595@estudiantes.upsa.edu.bo"));
+    options.AddPolicy("RequireAdminRole", policy => policy.RequireRole("Admin")); // New policy for Admin role
+});
 
 var app = builder.Build();
 
@@ -34,7 +42,7 @@ using (var scope = app.Services.CreateScope())
     }
 
     // Find your user account by email
-    var userEmail = "a2017117595@estudiantes.upsa.edu.bo"; // Replace with your email
+    var userEmail = "a2017117595@estudiantes.upsa.edu.bo"; // Replace with your email 
     var user = await userManager.FindByEmailAsync(userEmail);
 
     if (user != null)
@@ -58,7 +66,6 @@ if (app.Environment.IsDevelopment())
 else
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
@@ -74,7 +81,6 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
-// Add your custom route for the RoleManagement Razor Page
 app.MapRazorPages();
 
 app.Run();

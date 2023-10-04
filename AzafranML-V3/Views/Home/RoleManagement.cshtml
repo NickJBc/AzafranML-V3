@@ -1,37 +1,150 @@
-﻿@page "/Home/RoleManagement"
+﻿@model AzafranML_V3.Models.RoleManagementViewModel
 
-@model RoleManagementModel
+<style>
+    /* Custom styles */
+    .content-section {
+        border: 1px solid #e1e1e1;
+        padding: 20px;
+        margin-bottom: 40px;
+        border-radius: 5px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    }
 
-<h1>Role Management</h1>
+    .section-header {
+        background-color: #f7f7f7;
+        padding: 10px;
+        border-radius: 3px;
+        font-weight: 500;
+        margin: -20px -20px 20px -20px;
+    }
 
-<!-- Display roles -->
-<table class="table">
-    <thead>
-        <tr>
-            <th>Role Name</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var role in Model.Roles)
-        {
-            <tr>
-                <td>@role.Name</td>
-                <td>
-                    <a asp-page="EditRole" asp-route-id="@role.Id">Edit</a> |
-                    <a asp-page="DeleteRole" asp-route-id="@role.Id">Delete</a>
-                </td>
-            </tr>
+    .alert-list {
+        list-style: none;
+        padding: 0;
+    }
+
+    /* Foldable content styles */
+    .foldable-content {
+        display: block;
+        transition: max-height 0.5s, opacity 0.3s;
+    }
+
+    .foldable-btn {
+        cursor: pointer;
+        margin-left: 10px;
+        font-size: 1.2rem;
+        background: none;
+        border: none;
+        color: #007bff; /* Bootstrap primary color */
+        transition: transform 0.3s;
+    }
+
+        .foldable-btn:focus {
+            outline: none;
         }
-    </tbody>
-</table>
+</style>
 
-<!-- Create a new role -->
-<h2>Create New Role</h2>
-<form method="post">
-    <div class="form-group">
-        <label for="roleName">Role Name</label>
-        <input type="text" class="form-control" id="roleName" name="roleName" required>
+<script>
+    function toggleSectionContent(sectionId, btnId) {
+        const content = document.getElementById(sectionId);
+        const btn = document.getElementById(btnId);
+        if (content.style.display === "none" || content.style.display === "") {
+            content.style.display = "block";
+            btn.textContent = "−";  // Change button text to "−" (minus)
+        } else {
+            content.style.display = "none";
+            btn.textContent = "+";  // Change button text to "+" (plus)
+        }
+    }
+</script>
+
+<h1 class="header-text">Role Management</h1>
+
+<!-- Validation Section -->
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="alert alert-danger">
+        <strong>Errors:</strong>
+        <ul class="alert-list">
+            @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+            {
+                <li>@error.ErrorMessage</li>
+            }
+        </ul>
     </div>
-    <button type="submit" class="btn btn-primary">Create Role</button>
-</form>
+}
+
+<div asp-validation-summary="All" class="text-danger"></div>
+
+<!-- Role Creation Section -->
+<div class="content-section">
+    <h3 class="section-header">Create New Role <button class="foldable-btn" id="roleCreationBtn" onclick="toggleSectionContent('roleCreationContent', 'roleCreationBtn')">-</button></h3>
+    <div id="roleCreationContent" class="foldable-content">
+        <form method="post">
+            <div class="form-group">
+                <label for="roleName">Role Name</label>
+                <input type="text" class="form-control" id="roleName" name="roleName" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Create Role</button>
+        </form>
+    </div>
+</div>
+
+<!-- Assign Roles Section -->
+<div class="content-section">
+    <h3 class="section-header">Manage User Roles <button class="foldable-btn" id="userRolesBtn" onclick="toggleSectionContent('userRolesContent', 'userRolesBtn')">-</button></h3>
+    <div id="userRolesContent" class="foldable-content">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>User</th>
+                    <th>Roles</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null && Model.Users != null && Model.UserRoles != null)
+                {
+                    foreach (var user in Model.Users)
+                    {
+                        <tr>
+                            <td>@user.UserName</td>
+                            <td>@string.Join(", ", Model.UserRoles[user.Id])</td>
+                            <td><a asp-action="EditUserRoles" asp-route-id="@user.Id">Edit Roles</a></td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Role Management Section -->
+<div class="content-section">
+    <h3 class="section-header">Manage Roles <button class="foldable-btn" id="rolesBtn" onclick="toggleSectionContent('rolesContent', 'rolesBtn')">-</button></h3>
+    <div id="rolesContent" class="foldable-content">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Role Name</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null && Model.Roles != null)
+                {
+                    foreach (var role in Model.Roles)
+                    {
+                        <tr>
+                            <td>@role.Name</td>
+                            <td>
+                                <a asp-action="EditUserRoles" asp-route-id="@role.Id">Edit</a> |
+                                <a asp-action="DeleteRole" asp-route-id="@role.Id">Delete</a>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

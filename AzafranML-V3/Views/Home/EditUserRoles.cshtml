@@ -1,0 +1,22 @@
+﻿@model AzafranML_V3.Models.EditUserRolesViewModel
+
+<h1>Edit Roles for @Model.Email</h1>
+
+<form method="post">
+    <input type="hidden" asp-for="UserId" />
+    <input type="hidden" asp-for="Email" />
+
+    <div class="form-group">
+        <label>Roles</label>
+        @foreach (var role in Model.AllRoles)
+        {
+            var isChecked = Model.UserRoles.Contains(role) ? "checked" : "";
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="roles" value="@role" @isChecked />
+                <label class="form-check-label">@role</label>
+            </div>
+        }
+    </div>
+
+    <button type="submit" class="btn btn-primary">Update Roles</button>
+</form>
