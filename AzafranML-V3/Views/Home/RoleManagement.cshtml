@@ -76,6 +76,25 @@
 
 <div asp-validation-summary="All" class="text-danger"></div>
 
+<!-- User Creation Section -->
+<div class="content-section">
+    <h3 class="section-header">Create New User <button class="foldable-btn" id="userCreationBtn" onclick="toggleSectionContent('userCreationContent', 'userCreationBtn')">-</button></h3>
+    <div id="userCreationContent" class="foldable-content">
+        <form method="post" asp-action="CreateUser">
+            <div class="form-group">
+                <label for="newUserEmail">Email</label>
+                <input type="email" class="form-control" id="newUserEmail" name="NewUserEmail" required>
+            </div>
+            <div class="form-group">
+                <label for="newUserPassword">Password</label>
+                <input type="password" class="form-control" id="newUserPassword" name="NewUserPassword" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Create User</button>
+        </form>
+    </div>
+</div>
+
+
 <!-- Role Creation Section -->
 <div class="content-section">
     <h3 class="section-header">Create New Role <button class="foldable-btn" id="roleCreationBtn" onclick="toggleSectionContent('roleCreationContent', 'roleCreationBtn')">-</button></h3>
@@ -90,7 +109,7 @@
     </div>
 </div>
 
-<!-- Assign Roles Section -->
+<!-- Assign Roles and Delete Users Section -->
 <div class="content-section">
     <h3 class="section-header">Manage User Roles <button class="foldable-btn" id="userRolesBtn" onclick="toggleSectionContent('userRolesContent', 'userRolesBtn')">-</button></h3>
     <div id="userRolesContent" class="foldable-content">
@@ -108,9 +127,12 @@
                     foreach (var user in Model.Users)
                     {
                         <tr>
-                            <td>@user.UserName</td>
+                            <td>@user.Email</td>
                             <td>@string.Join(", ", Model.UserRoles[user.Id])</td>
-                            <td><a asp-action="EditUserRoles" asp-route-id="@user.Id">Edit Roles</a></td>
+                            <td>
+                                <a asp-action="EditUserRoles" asp-route-id="@user.Id">Edit Roles</a> |
+                                <a asp-action="DeleteUser" asp-route-id="@user.Id">Delete</a>
+                            </td>
                         </tr>
                     }
                 }

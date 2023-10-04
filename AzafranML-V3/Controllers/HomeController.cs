@@ -207,6 +207,66 @@ namespace AzafranML_V3.Controllers
             }
             return View("DeleteRole", role);
         }
+        [HttpPost]
+        public async Task<IActionResult> CreateUser(RoleManagementViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = new ApplicationUser
+                {
+                    UserName = model.NewUserEmail,  // Use email as the username
+                    Email = model.NewUserEmail,
+                    EmailConfirmed = true  // Bypass email confirmation
+                };
 
+                var result = await _userManager.CreateAsync(user, model.NewUserPassword);
+
+                if (result.Succeeded)
+                {
+                    return RedirectToAction("RoleManagement");
+                }
+
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError("", error.Description);
+                }
+            }
+
+            // If we got this far, something failed, redisplay form
+            return RedirectToAction("RoleManagement");
+        }
+        [HttpGet]
+        public async Task<IActionResult> DeleteUser(string id)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+            if (user == null)
+            {
+                _logger.LogError($"User with ID {id} not found.");
+                return NotFound();
+            }
+            return View(user);
+        }
+        [HttpPost]
+        public async Task<IActionResult> DeleteUserConfirmed(string id)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+            if (user == null)
+            {
+                _logger.LogError($"User with ID {id} not found.");
+                return NotFound();
+            }
+
+            var result = await _userManager.DeleteAsync(user);
+            if (result.Succeeded)
+            {
+                return RedirectToAction("RoleManagement");
+            }
+
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError("", error.Description);
+            }
+            return View("DeleteUser", user);
+        }
     }
 }

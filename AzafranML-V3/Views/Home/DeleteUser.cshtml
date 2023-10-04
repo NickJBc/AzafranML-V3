@@ -1,0 +1,10 @@
+﻿@model AzafranML_V3.Models.Identity.ApplicationUser
+
+<h2>Delete User</h2>
+<p>Are you sure you want to delete user @Model.Email?</p>
+
+<form method="post" asp-action="DeleteUserConfirmed">
+    <input type="hidden" name="id" value="@Model.Id" />
+    <button type="submit" class="btn btn-danger">Delete</button>
+    <a asp-action="RoleManagement" class="btn btn-secondary">Cancel</a>
+</form>
