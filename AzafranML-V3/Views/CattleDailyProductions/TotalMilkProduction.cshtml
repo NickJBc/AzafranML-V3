@@ -10,6 +10,9 @@
     <label for="endDate">End Date:</label>
     <input type="date" id="endDate" name="endDate" value="@DateTime.Now.AddDays(1).ToString("yyyy-MM-dd")">
 
+    <label for="cattleId">Cattle ID:</label>
+    <input type="number" id="cattleId" name="cattleId" value="@Model.CattleId">
+
     <button type="submit">Filter</button>
 </form>
 
@@ -45,7 +48,15 @@
             options: options
         });
     </script>
-    <h3>Detailed Production</h3>
+
+    @if (Model.CattleId.HasValue)
+    {
+        <h3>Detailed Production for Cattle ID: @Model.CattleId</h3>
+    }
+    else
+    {
+        <h3>Detailed Production</h3>
+    }
 
     <table>
         <thead>

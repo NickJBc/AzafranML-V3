@@ -173,18 +173,29 @@ namespace AzafranML_V3.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
-        public async Task<IActionResult> TotalMilkProduction(DateTime? startDate, DateTime? endDate)
+        public async Task<IActionResult> TotalMilkProduction(DateTime? startDate, DateTime? endDate, int? cattleId)  // Added cattleId parameter
         {
-            var viewModel = new TotalMilkProductionViewModel();
+            var viewModel = new TotalMilkProductionViewModel
+            {
+                StartDate = startDate ?? DateTime.Now.AddDays(-1),
+                EndDate = endDate ?? DateTime.Now.AddDays(1),
+                CattleId = cattleId
+            };
 
             if (startDate.HasValue && endDate.HasValue)
             {
-                // Fetch the daily milk production data for the given date range
-                var dailyProductions = await _context.CattleDailyProduction
-                    .Where(dp => dp.DailyProduction.Date >= startDate.Value && dp.DailyProduction.Date <= endDate.Value)
-                    .Include(dp => dp.DailyProduction)
-                    .Include(dp => dp.Cattle)
-                    .ToListAsync();
+                var query = _context.CattleDailyProduction
+                .Where(dp => dp.DailyProduction.Date >= startDate.Value && dp.DailyProduction.Date <= endDate.Value);
+
+                if (viewModel.CattleId.HasValue)
+                {
+                    query = query.Where(dp => dp.CattleId == viewModel.CattleId.Value);
+                }
+
+                query = query.Include(dp => dp.DailyProduction).Include(dp => dp.Cattle);
+
+                var dailyProductions = await query.ToListAsync();
+
 
                 // Group by Date and Sum AmountProduced for Total Production
                 viewModel.DailyProductions = dailyProductions
@@ -204,6 +215,7 @@ namespace AzafranML_V3.Controllers
 
             return View(viewModel);
         }
+
 
         private bool CattleDailyProductionExists(int id)
         {

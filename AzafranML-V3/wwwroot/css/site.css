@@ -1,18 +1,86 @@
-html {
-  font-size: 14px;
-}
-
-@media (min-width: 768px) {
-  html {
+/* Base Styles */
+html, body {
+    font-family: 'Roboto', sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background-color: #f8f9fa;
     font-size: 16px;
-  }
 }
 
-html {
-  position: relative;
-  min-height: 100%;
+/* Navbar Enhancements */
+.navbar {
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-bottom: 2px solid #e7e7e7;
+    transition: all 0.3s;
 }
 
-body {
-  margin-bottom: 60px;
+    .navbar:hover {
+        background-color: #f1f1f1;
+    }
+
+.navbar-brand, .navbar-nav .nav-link {
+    color: #333 !important;
+}
+
+    .navbar-nav .nav-link:hover {
+        color: #007bff !important;
+        text-decoration: underline;
+        transform: scale(1.05);
+    }
+
+.navbar-nav .nav-item.active .nav-link {
+    color: #007bff !important;
+    font-weight: bold;
+}
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 600;
+    color: #0056b3;
+}
+
+/* Main Content */
+.container {
+    padding: 40px 20px;
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+}
+
+/* Card-like Design for Sections */
+.card {
+    border: none;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+}
+
+/* Buttons */
+button, input[type="submit"], input[type="button"], .btn {
+    background: linear-gradient(90deg, #007bff, #0056b3);
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 15px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s;
+}
+
+    button:hover, input[type="submit"]:hover, input[type="button"]:hover, .btn:hover {
+        background: linear-gradient(90deg, #0056b3, #004192);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    button:focus, input[type="submit"]:focus, input[type="button"]:focus, .btn:focus {
+        outline: none;
+        box-shadow: 0 0 5px #007bff;
+    }
+
+/* Additional Utility Classes */
+.shadow-light {
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.shadow-deep {
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
 }

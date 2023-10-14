@@ -6,5 +6,6 @@
         public Dictionary<DateTime, Dictionary<int, double>> DetailedProductions { get; set; } = new Dictionary<DateTime, Dictionary<int, double>>();
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
+        public int? CattleId { get; set; }  
     }
 }

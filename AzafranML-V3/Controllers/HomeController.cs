@@ -47,10 +47,6 @@ namespace AzafranML_V3.Controllers
                 // Handle validation failures
                 return View(model);
             }
-
-            // Your prediction code here
-
-            // Assuming you want to display the results on the same page
             return View(model);
         }
 
