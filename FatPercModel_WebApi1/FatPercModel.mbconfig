@@ -1,0 +1,164 @@
+﻿{
+  "Scenario": "Forecasting",
+  "DataSource": {
+    "Type": "TabularFile",
+    "Version": 1,
+    "FilePath": "C:\\Users\\njbed\\Downloads\\FatPerc.csv",
+    "Delimiter": ",",
+    "DecimalMarker": ".",
+    "HasHeader": true,
+    "ColumnProperties": [
+      {
+        "ColumnName": "Date",
+        "ColumnPurpose": "Feature",
+        "ColumnDataFormat": "String",
+        "IsCategorical": false,
+        "Type": "Column",
+        "Version": 4
+      },
+      {
+        "ColumnName": "Fat Percentage",
+        "ColumnPurpose": "Feature",
+        "ColumnDataFormat": "Single",
+        "IsCategorical": false,
+        "Type": "Column",
+        "Version": 4
+      }
+    ]
+  },
+  "Environment": {
+    "Type": "LocalCPU",
+    "Version": 1
+  },
+  "RunHistory": {
+    "Version": 3,
+    "Type": "Result",
+    "Trials": [
+      {
+        "Version": 1,
+        "Type": "Trial",
+        "TrainerName": "ForecastBySsa",
+        "Score": 0.47668029447757232,
+        "RuntimeInSeconds": 0.106,
+        "Parameter": {
+          "_SCHEMA_": "e0",
+          "e0": {
+            "WindowSize": 66,
+            "SeriesLength": 2930,
+            "TrainSize": 2211,
+            "Horizon": 10,
+            "OutputColumnName": "Fat Percentage",
+            "InputColumnName": "Fat Percentage",
+            "ConfidenceLowerBoundColumn": "Fat Percentage_LB",
+            "ConfidenceUpperBoundColumn": "Fat Percentage_UB"
+          }
+        }
+      },
+      {
+        "Version": 1,
+        "Type": "Trial",
+        "TrainerName": "ForecastBySsa",
+        "Score": 0.47668029447757232,
+        "RuntimeInSeconds": 0.087,
+        "Parameter": {
+          "_SCHEMA_": "e0",
+          "e0": {
+            "WindowSize": 66,
+            "SeriesLength": 2934,
+            "TrainSize": 2211,
+            "Horizon": 10,
+            "OutputColumnName": "Fat Percentage",
+            "InputColumnName": "Fat Percentage",
+            "ConfidenceLowerBoundColumn": "Fat Percentage_LB",
+            "ConfidenceUpperBoundColumn": "Fat Percentage_UB"
+          }
+        }
+      },
+      {
+        "Version": 1,
+        "Type": "Trial",
+        "TrainerName": "ForecastBySsa",
+        "Score": 0.47668029447757232,
+        "RuntimeInSeconds": 0.087,
+        "Parameter": {
+          "_SCHEMA_": "e0",
+          "e0": {
+            "WindowSize": 66,
+            "SeriesLength": 979,
+            "TrainSize": 2211,
+            "Horizon": 10,
+            "OutputColumnName": "Fat Percentage",
+            "InputColumnName": "Fat Percentage",
+            "ConfidenceLowerBoundColumn": "Fat Percentage_LB",
+            "ConfidenceUpperBoundColumn": "Fat Percentage_UB"
+          }
+        }
+      },
+      {
+        "Version": 1,
+        "Type": "Trial",
+        "TrainerName": "ForecastBySsa",
+        "Score": 0.47668029447757232,
+        "RuntimeInSeconds": 0.089,
+        "Parameter": {
+          "_SCHEMA_": "e0",
+          "e0": {
+            "WindowSize": 66,
+            "SeriesLength": 265,
+            "TrainSize": 2211,
+            "Horizon": 10,
+            "OutputColumnName": "Fat Percentage",
+            "InputColumnName": "Fat Percentage",
+            "ConfidenceLowerBoundColumn": "Fat Percentage_LB",
+            "ConfidenceUpperBoundColumn": "Fat Percentage_UB"
+          }
+        }
+      },
+      {
+        "Version": 1,
+        "Type": "Trial",
+        "TrainerName": "ForecastBySsa",
+        "Score": 0.47668029447757232,
+        "RuntimeInSeconds": 0.082,
+        "Parameter": {
+          "_SCHEMA_": "e0",
+          "e0": {
+            "WindowSize": 66,
+            "SeriesLength": 507,
+            "TrainSize": 2211,
+            "Horizon": 10,
+            "OutputColumnName": "Fat Percentage",
+            "InputColumnName": "Fat Percentage",
+            "ConfidenceLowerBoundColumn": "Fat Percentage_LB",
+            "ConfidenceUpperBoundColumn": "Fat Percentage_UB"
+          }
+        }
+      }
+    ],
+    "Estimators": {
+      "e0": "ForecastBySsa"
+    },
+    "Schema": "e0",
+    "MetricName": "RMSE",
+    "ModelFilePath": "C:\\Users\\njbed\\source\\repos\\AzafranML-V3\\AzafranML-V3\\FatPercModel.mlnet"
+  },
+  "Type": "TrainingConfig",
+  "Version": 4,
+  "TrainingOption": {
+    "Version": 3,
+    "OptimizeMetric": "RMSE",
+    "Subsampling": false,
+    "Type": "ForecastingTrainingOption",
+    "TrainingTime": 600,
+    "UseCrossValidation": false,
+    "Horizon": 10,
+    "TimeColumn": "Date",
+    "LabelColumn": "Fat Percentage",
+    "UseDefaultIndex": false,
+    "ValidationOption": {
+      "Version": 0,
+      "Type": "CrossValidationValidationOption",
+      "NumberOfFolds": 5
+    }
+  }
+}

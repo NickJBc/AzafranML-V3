@@ -17,12 +17,21 @@ namespace AzafranML_V3.Controllers
         {
             if (ModelState.IsValid)
             {
-                var result = MLModel.Predict(horizon: model.PredictionHorizon);
-                ViewBag.Result = new
+                var milkResult = MLModel.Predict(horizon: model.PredictionHorizon);
+                var fatResult = FatPercModel.Predict(horizon: model.PredictionHorizon);
+
+                ViewBag.MilkResult = new
                 {
-                    Prediction = result.Monthly_milk_production__litters_per_cow_,
-                    LowerBound = result.Monthly_milk_production__litters_per_cow__LB,
-                    UpperBound = result.Monthly_milk_production__litters_per_cow__UB
+                    Prediction = milkResult.Monthly_milk_production__litters_per_cow_,
+                    LowerBound = milkResult.Monthly_milk_production__litters_per_cow__LB,
+                    UpperBound = milkResult.Monthly_milk_production__litters_per_cow__UB
+                };
+
+                ViewBag.FatResult = new
+                {
+                    Prediction = fatResult.Fat_Percentage,
+                    LowerBound = fatResult.Fat_Percentage_LB,
+                    UpperBound = fatResult.Fat_Percentage_UB
                 };
 
                 return View(model);

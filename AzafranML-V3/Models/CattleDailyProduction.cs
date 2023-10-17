@@ -8,6 +8,6 @@
         public int DailyProductionId { get; set; }
         public DailyProduction? DailyProduction { get; set; }
 
-        public double AmountProduced { get; set; } // Guarda la cantidad de leche producida por la vaca ese dia.
+        public double AmountProduced { get; set; } // daily
     }
 }

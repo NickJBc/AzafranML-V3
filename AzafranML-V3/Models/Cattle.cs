@@ -18,7 +18,7 @@ namespace AzafranML_V3.Models
         public Cattle()
         {
             Tag = string.Empty;
-            FeedType = string.Empty;  //Posiblemente innecesario
+            FeedType = string.Empty;  //Might not be necessary
             Race = string.Empty;
         }
     }

@@ -5,7 +5,6 @@
          Cambio de estilo a oscuro
         background-color: dimgrey;
         color: white;
-       
     }
 </style>
  -->
@@ -28,7 +27,7 @@
     <button type="submit" class="btn btn-primary">Predict</button>
 }
 
-@if (ViewBag.Result != null)
+@if (ViewBag.MilkResult != null)
 {
     <h4>Prediction Result:</h4>
     <div>
@@ -44,13 +43,33 @@
     <button id="exportChartBtn" class="btn btn-primary mt-3">Exportar Grafico</button>
     <button id="exportRawNumbersBtn" class="btn btn-primary mt-3">Export Datos</button>
     <div id="rawNumbersContainer" class="mt-3" style="display: none;"></div>
+
+    <h4>Fat Percentage Prediction Result:</h4>
+    <div>
+        <input type="checkbox" id="toggleFatLowerBound" checked>
+        <label for="toggleFatLowerBound">Limite Inferior</label>
+    </div>
+    <div>
+        <input type="checkbox" id="toggleFatUpperBound" checked>
+        <label for="toggleFatUpperBound">Limite Superior</label>
+    </div>
+    <canvas id="fatPredictionChart"></canvas>
+    <button id="showFatRawNumbersBtn" class="btn btn-primary mt-3">Mostrar Datos</button>
+    <button id="exportFatChartBtn" class="btn btn-primary mt-3">Exportar Grafico</button>
+    <button id="exportFatRawNumbersBtn" class="btn btn-primary mt-3">Export Datos</button>
+    <div id="fatRawNumbersContainer" class="mt-3" style="display: none;"></div>
 }
+
 
 @section scripts {
     <script>
-        var predictionData = @Html.Raw(Json.Serialize(ViewBag.Result != null ? ViewBag.Result.Prediction : null));
-        var lowerBoundData = @Html.Raw(Json.Serialize(ViewBag.Result != null ? ViewBag.Result.LowerBound : null));
-        var upperBoundData = @Html.Raw(Json.Serialize(ViewBag.Result != null ? ViewBag.Result.UpperBound : null));
+        var predictionData = @Html.Raw(Json.Serialize(ViewBag.MilkResult != null ? ViewBag.MilkResult.Prediction : null));
+        var lowerBoundData = @Html.Raw(Json.Serialize(ViewBag.MilkResult != null ? ViewBag.MilkResult.LowerBound : null));
+        var upperBoundData = @Html.Raw(Json.Serialize(ViewBag.MilkResult != null ? ViewBag.MilkResult.UpperBound : null));
+
+        var fatPredictionData = @Html.Raw(Json.Serialize(ViewBag.FatResult != null ? ViewBag.FatResult.Prediction : null));
+        var fatLowerBoundData = @Html.Raw(Json.Serialize(ViewBag.FatResult != null ? ViewBag.FatResult.LowerBound : null));
+        var fatUpperBoundData = @Html.Raw(Json.Serialize(ViewBag.FatResult != null ? ViewBag.FatResult.UpperBound : null));
 
         // Create a new Chart.js line chart
         var ctx = document.getElementById('predictionChart').getContext('2d');
@@ -103,7 +122,6 @@
                 }
             }
         });
-
         // Toggle visibility of lower bound
         var toggleLowerBound = document.getElementById('toggleLowerBound');
         toggleLowerBound.addEventListener('change', function () {
@@ -167,5 +185,118 @@
             a.download = 'raw_numbers.xlsx';
             a.click();
         });
+
+    var fatCtx = document.getElementById('fatPredictionChart').getContext('2d');
+    var fatPredictionChart = new Chart(fatCtx, {
+    type: 'line',
+    data: {
+        labels: Array.from({ length: fatPredictionData.length }, (_, i) => i + 1),
+        datasets: [
+            {
+                label: 'Percentage Prediction',
+                data: fatPredictionData,
+                fill: false,
+                        borderColor: 'rgba(153, 51, 0, 1)',  // different color for distinction
+                tension: 0.1
+            },
+            {
+                label: 'Limite Inferior',
+                data: fatLowerBoundData,
+                fill: false,
+                        borderColor: 'rgba(153, 204, 153, 1)',  // different color for distinction
+                tension: 0.1,
+                hidden: false // Initial visibility state
+            },
+            {
+                label: 'Limite Superior',
+                data: fatUpperBoundData,
+                fill: false,
+                        borderColor: 'rgba(0, 51, 102, 1)',  // different color for distinction
+                tension: 0.1,
+                hidden: false // Initial visibility state
+            }
+        ]
+    },
+    options: {
+        scales: {
+            x: {
+                display: true,
+                title: {
+                    display: true,
+                    text: 'Months'
+                }
+            },
+            y: {
+                display: true,
+                title: {
+                    display: true,
+                    text: 'Fat Percentage Value'
+                }
+            }
+        }
+    }
+});
+        // Toggle visibility of fat lower bound
+        var toggleFatLowerBound = document.getElementById('toggleFatLowerBound');
+        toggleFatLowerBound.addEventListener('change', function () {
+            fatPredictionChart.getDatasetMeta(1).hidden = !this.checked;
+            fatPredictionChart.update();
+        });
+
+        // Toggle visibility of fat upper bound
+        var toggleFatUpperBound = document.getElementById('toggleFatUpperBound');
+        toggleFatUpperBound.addEventListener('change', function () {
+            fatPredictionChart.getDatasetMeta(2).hidden = !this.checked;
+            fatPredictionChart.update();
+        });
+
+        // Show fat raw numbers
+        var showFatRawNumbersBtn = document.getElementById('showFatRawNumbersBtn');
+        var fatRawNumbersContainer = document.getElementById('fatRawNumbersContainer');
+        showFatRawNumbersBtn.addEventListener('click', function () {
+            fatRawNumbersContainer.style.display = 'block';
+            fatRawNumbersContainer.innerHTML = '';
+            for (var i = 0; i < fatPredictionData.length; i++) {
+                var rawNumber = document.createElement('p');
+                rawNumber.textContent = 'Month ' + (i + 1) + ': ' + fatPredictionData[i];
+                fatRawNumbersContainer.appendChild(rawNumber);
+            }
+        });
+        // Export chart as image
+        var exportFatChartBtn = document.getElementById('exportFatChartBtn');
+        exportFatChartBtn.addEventListener('click', function () {
+            html2canvas(document.getElementById('fatPredictionChart')).then(function (canvas) {
+                var chartImage = canvas.toDataURL('image/png');
+                var a = document.createElement('a');
+                a.href = chartImage;
+                a.download = 'fat_percentage_chart.png';
+                a.click();
+            });
+        });
+        // Export raw data as Excel 
+        var exportFatRawNumbersBtn = document.getElementById('exportFatRawNumbersBtn');
+        exportFatRawNumbersBtn.addEventListener('click', function () {
+            var workbook = XLSX.utils.book_new();
+            var worksheet = XLSX.utils.aoa_to_sheet([['Month', 'Fat Percentage Prediction']]);
+            for (var i = 0; i < fatPredictionData.length; i++) {
+                XLSX.utils.sheet_add_aoa(worksheet, [[i + 1, fatPredictionData[i]]], { origin: -1 });
+            }
+            XLSX.utils.book_append_sheet(workbook, worksheet, 'Fat Percentage Numbers');
+            var excelData = XLSX.write(workbook, { type: 'binary', bookType: 'xlsx' });
+
+            function s2ab(s) {
+                var buf = new ArrayBuffer(s.length);
+                var view = new Uint8Array(buf);
+                for (var i = 0; i < s.length; i++) view[i] = s.charCodeAt(i) & 0xff;
+                return buf;
+            }
+
+            var blob = new Blob([s2ab(excelData)], { type: 'application/octet-stream' });
+            var a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = 'fat_percentage_numbers.xlsx';
+            a.click();
+        });
+
     </script>
 }
