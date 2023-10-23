@@ -62,6 +62,17 @@ namespace AzafranML_V3.Controllers
             {
                 _context.Add(cattle);
                 await _context.SaveChangesAsync();
+
+                // Add the initial weight to CattleWeightHistory using WeightInKg property
+                var weightHistory = new CattleWeightHistory
+                {
+                    CattleId = cattle.Id,
+                    RecordedDate = DateTime.Now,
+                    WeightInKg = cattle.WeightInKg
+                };
+                _context.CattleWeightHistories.Add(weightHistory);
+                await _context.SaveChangesAsync();
+
                 return RedirectToAction(nameof(Index));
             }
             return View(cattle);
@@ -88,7 +99,7 @@ namespace AzafranML_V3.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Tag,Age,Race,WeightInKg,FeedType")] Cattle cattle)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Tag,Age,Race,WeightInKg,FeedType")] Cattle cattle, double updatedWeight)
         {
             if (id != cattle.Id)
             {
@@ -99,7 +110,20 @@ namespace AzafranML_V3.Controllers
             {
                 try
                 {
+                    // Update the cattle's current weight with the updatedWeight from the form
+                    cattle.WeightInKg = updatedWeight;
+
                     _context.Update(cattle);
+
+                    // Add the updated weight to CattleWeightHistory
+                    var weightHistory = new CattleWeightHistory
+                    {
+                        CattleId = cattle.Id,
+                        RecordedDate = DateTime.Now,
+                        WeightInKg = updatedWeight
+                    };
+                    _context.CattleWeightHistories.Add(weightHistory);
+
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -117,6 +141,7 @@ namespace AzafranML_V3.Controllers
             }
             return View(cattle);
         }
+
 
         // GET: Cattle/Delete/5
         public async Task<IActionResult> Delete(int? id)

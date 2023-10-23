@@ -13,7 +13,7 @@ namespace AzafranML_V3.Models
         public double WeightInKg { get; set; }
         public string FeedType { get; set; }
         public ICollection<CattleDailyProduction> CattleDailyProductions { get; set; } = new List<CattleDailyProduction>();
-        
+        public ICollection<CattleWeightHistory> WeightHistories { get; set; } = new List<CattleWeightHistory>();
 
         public Cattle()
         {

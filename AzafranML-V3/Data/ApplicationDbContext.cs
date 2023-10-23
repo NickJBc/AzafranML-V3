@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using AzafranML_V3.Models.Identity;
+using AzafranML_V3.Models;
 
 namespace AzafranML_V3.Data
 {
@@ -13,5 +14,6 @@ namespace AzafranML_V3.Data
         public DbSet<AzafranML_V3.Models.Cattle>? Cattle { get; set; }
         public DbSet<AzafranML_V3.Models.CattleDailyProduction>? CattleDailyProduction { get; set; }
         public DbSet<AzafranML_V3.Models.DailyProduction>? DailyProduction { get; set; }
+        public DbSet<CattleWeightHistory>? CattleWeightHistories { get; set; }
     }
 }

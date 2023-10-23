@@ -1,0 +1,52 @@
+﻿@model List<double>
+
+@{
+    ViewData["Title"] = "Milk Production Predictions";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<!-- Display predictions in a table -->
+<table class="table">
+    <thead>
+        <tr>
+            <th>Day</th>
+            <th>Predicted Production (Liters)</th>
+        </tr>
+    </thead>
+    <tbody>
+        @for (int i = 0; i < Model.Count; i++)
+        {
+            <tr>
+                <td>@(i + 1)</td>
+                <td>@Model[i]</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<!-- Display predictions in a line chart -->
+<canvas id="predictionChart" width="400" height="200"></canvas>
+
+<script>
+    var ctx = document.getElementById('predictionChart').getContext('2d');
+    var predictionChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: @Html.Raw(Json.Serialize(Enumerable.Range(1, Model.Count).ToList())),
+            datasets: [{
+                label: 'Predicted Milk Production',
+                data: @Html.Raw(Json.Serialize(Model)),
+                borderColor: 'rgba(75, 192, 192, 1)',
+                fill: false
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+</script>
